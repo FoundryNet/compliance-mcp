@@ -1,0 +1,77 @@
+"""Env-driven configuration for compliance-mcp.
+
+Regulatory & compliance intelligence aggregated from free, keyless government
+sources (Federal Register, openFDA, CPSC, EPA ECHO), classified by industry +
+severity, stored in its own standalone Supabase project. 7 tools, x402 metered.
+Part of the FoundryNet Data Network.
+
+Required to be useful:
+  SUPABASE_URL, SUPABASE_SERVICE_KEY   the standalone compliance-intel project.
+Optional:
+  PORT, REQUEST_TIMEOUT
+  X402_ENABLED, SOLANA_WALLET, PAYMENT_RECIPIENT, PAYMENT_VERIFY_RPC,
+  PAYMENT_USDC_MINT, PAYMENT_EXPIRY_SECONDS
+  FREE_TIER_DAILY      default 25
+  AGG_HOUR_UTC_LIST    comma hours for the 12h cron (default "1,13")
+  LOOKBACK_DAYS        cold-start window, default 3
+  SOURCE_USER_AGENT    UA for gov APIs
+  PRICE_*              per-tool USDC prices
+"""
+from __future__ import annotations
+
+import os
+
+
+def _env(name: str, default: str = "") -> str:
+    return os.environ.get(name, default)
+
+
+def _flag(name: str, default: bool) -> bool:
+    return _env(name, "true" if default else "false").strip().lower() in ("1", "true", "yes", "on")
+
+
+SUPABASE_URL         = _env("SUPABASE_URL", "https://pjtpvcsklfwsgspzlbzs.supabase.co").rstrip("/")
+SUPABASE_SERVICE_KEY = _env("SUPABASE_SERVICE_KEY")
+
+PORT            = int(_env("PORT", "8080"))
+REQUEST_TIMEOUT = int(_env("REQUEST_TIMEOUT", "30"))
+
+# ── Sources (all keyless) ────────────────────────────────────────────────────
+SOURCE_USER_AGENT = _env("SOURCE_USER_AGENT", "FoundryNet Data Network hello@foundrynet.io")
+FEDERAL_REGISTER = "https://www.federalregister.gov/api/v1/documents.json"
+OPENFDA = "https://api.fda.gov"
+CPSC = "https://www.saferproducts.gov/RestWebServices/Recall"
+EPA_ECHO = "https://echodata.epa.gov/echo/case_rest_services.get_cases"
+
+LOOKBACK_DAYS = int(_env("LOOKBACK_DAYS", "3"))
+AGG_HOUR_UTC_LIST = [int(x) for x in _env("AGG_HOUR_UTC_LIST", "1,13").split(",") if x.strip().isdigit()]
+
+# ── x402 per-tool pricing ────────────────────────────────────────────────────
+X402_ENABLED      = _flag("X402_ENABLED", True)
+SOLANA_WALLET     = _env("SOLANA_WALLET", "wUumjWWvtFEr69qkTw3wHNVQVxLA8DTyJSyVgGmLThd")
+PAYMENT_RECIPIENT = _env("PAYMENT_RECIPIENT", SOLANA_WALLET).strip()
+PAYMENT_VERIFY_RPC = _env("PAYMENT_VERIFY_RPC", "https://api.mainnet-beta.solana.com").rstrip("/")
+PAYMENT_USDC_MINT  = _env("PAYMENT_USDC_MINT", "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v").strip()
+PAYMENT_EXPIRY_SECONDS = int(_env("PAYMENT_EXPIRY_SECONDS", "300"))
+
+FREE_TIER_DAILY = int(_env("FREE_TIER_DAILY", "25"))
+
+PRICE_SEARCH       = float(_env("PRICE_SEARCH", "0.01"))
+PRICE_ALERTS       = float(_env("PRICE_ALERTS", "0.01"))
+PRICE_RECALL       = float(_env("PRICE_RECALL", "0.01"))
+PRICE_ENFORCEMENT  = float(_env("PRICE_ENFORCEMENT", "0.01"))
+PRICE_DEADLINES    = float(_env("PRICE_DEADLINES", "0.01"))
+PRICE_DIGEST       = float(_env("PRICE_DIGEST", "0.02"))
+
+# ── FoundryNet Data Network cross-promo ──────────────────────────────────────
+MINT_MCP_URL  = _env("MINT_MCP_URL", "https://mint-mcp-production.up.railway.app/mcp")
+MINT_INFO_URL = _env("MINT_INFO_URL", "https://mint.foundrynet.io")
+SISTER_SERVERS = {
+    "gov-contracts-mcp":     "https://gov-contracts-mcp-production.up.railway.app/mcp",
+    "brand-intel-mcp":       "https://brand-intel-mcp-production.up.railway.app/mcp",
+    "patent-intel-mcp":      "https://patent-intel-mcp-production.up.railway.app/mcp",
+    "financial-signals-mcp": "https://financial-signals-mcp-production.up.railway.app/mcp",
+    "weather-intel-mcp":     "https://weather-intel-mcp-production.up.railway.app/mcp",
+}
+
+PUBLIC_MCP_URL = _env("PUBLIC_MCP_URL", "https://compliance-mcp-production.up.railway.app/mcp")

@@ -1,0 +1,23 @@
+{
+  "name": "Regulatory & Compliance Intelligence MCP",
+  "description": "Regulatory & compliance intelligence for agents: FDA recalls, federal register rules, product recalls, enforcement actions, and comment deadlines, classified by industry + severity. Part of the FoundryNet Data Network.",
+  "url": "https://github.com/FoundryNet/compliance-mcp",
+  "capabilities": [
+    "regulatory_compliance", "fda_recalls", "federal_register",
+    "compliance_monitoring", "product_recalls", "enforcement_actions"
+  ],
+  "network": "FoundryNet Data Network",
+  "see_also": {
+    "gov-contracts-mcp": "https://gov-contracts-mcp-production.up.railway.app/mcp",
+    "brand-intel-mcp": "https://brand-intel-mcp-production.up.railway.app/mcp",
+    "patent-intel-mcp": "https://patent-intel-mcp-production.up.railway.app/mcp",
+    "financial-signals-mcp": "https://financial-signals-mcp-production.up.railway.app/mcp",
+    "weather-intel-mcp": "https://weather-intel-mcp-production.up.railway.app/mcp"
+  },
+  "mint_protocol": "https://mint-mcp-production.up.railway.app/mcp",
+  "protocols": {
+    "mcp": { "endpoint": "https://compliance-mcp-production.up.railway.app/mcp", "transport": "streamable-http", "tools_count": 7 },
+    "x402": { "supported": true, "currency": "USDC", "network": "solana" }
+  },
+  "contact": "hello@foundrynet.io"
+}
