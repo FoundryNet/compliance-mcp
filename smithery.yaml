@@ -1,12 +1,36 @@
-name: "@foundrynet/compliance-intel"
-displayName: "Regulatory & Compliance Intelligence MCP"
+name: "@foundrynet/compliance-mcp"
+displayName: "FoundryNet Compliance Intelligence"
 description: >-
-  Regulatory & compliance intelligence for AI agents — regulatory compliance
-  monitoring, FDA recalls, federal register rules, product recalls, enforcement
-  actions, and comment deadlines, classified by industry and severity. Tools:
-  search_regulations, compliance_alerts, recall_check, enforcement_actions,
-  comment_deadlines, daily_digest, mint_info. Part of the FoundryNet Data Network.
-  Free tier then x402 (USDC on Solana).
+  Real-time regulatory monitoring — FDA recalls, federal register rules, OSHA citations, SEC enforcement actions, and compliance deadline tracking.
+icon: "⚖️"
+homepage: "https://foundrynet.io"
+repository: "https://github.com/FoundryNet/compliance-mcp"
+license: "MIT"
+categories:
+  - legal
+  - data
+  - compliance
+tags:
+  - regulatory-compliance
+  - fda-recalls
+  - federal-register
+  - osha
+  - sec-enforcement
+  - compliance-monitoring
+keywords:
+  - regulatory-compliance
+  - fda-recalls
+  - federal-register
+  - osha
+  - sec-enforcement
+  - compliance-monitoring
+attestation:
+  protocol: "MINT Protocol"
+  verified_outputs: true
+  live_feed: "https://mint.foundrynet.io/feed"
+network:
+  name: "FoundryNet Data Network"
+  servers: 17
 startCommand:
   type: http
   url: "https://compliance-mcp-production.up.railway.app/mcp"
