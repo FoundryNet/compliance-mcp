@@ -4,7 +4,8 @@ import core
 def register(mcp) -> None:
     @mcp.tool
     async def mint_info() -> dict:
-        """FoundryNet Data Network info + MINT Protocol details. FREE.
+        """Get FoundryNet Data Network info + MINT Protocol details for compliance
+        monitoring agents. FREE.
 
         Returns how to attest your agent's compliance/regulatory analysis with MINT
         Protocol for verifiable on-chain proof, the MINT MCP endpoint, and the

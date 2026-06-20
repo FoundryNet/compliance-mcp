@@ -12,8 +12,9 @@ def register(mcp) -> None:
         agent_id: Optional[str] = None,
         payment_tx: Optional[str] = None,
     ) -> dict:
-        """Structured daily regulatory digest — new rules, recalls, enforcement, and
-        deadlines from the last ~2 days, organized by severity and type.
+        """Monitor a structured daily regulatory digest — new rules, recalls, enforcement,
+        and comment deadlines from the Federal Register, openFDA, and CPSC over the last
+        ~2 days, organized by severity and type for compliance monitoring.
 
         PAID: $0.02 USDC per query after the daily free allowance (25/day). On a
         402, pay the returned Solana memo and re-call with the SAME args plus

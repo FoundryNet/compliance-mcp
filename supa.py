@@ -70,6 +70,19 @@ async def upsert(rows: list) -> dict:
     return {"written": written}
 
 
+async def upsert_table(table: str, rows: list, on_conflict: str) -> dict:
+    """Generic merge-duplicates upsert for an arbitrary table (e.g. daily_briefs)."""
+    if not configured() or not rows:
+        return {"data": []}
+    r = await request_json("POST", _url(table),
+                           headers=_headers({"Prefer": "resolution=merge-duplicates,return=minimal"}),
+                           params={"on_conflict": on_conflict},
+                           body=rows, timeout=max(config.REQUEST_TIMEOUT, 60))
+    if isinstance(r, dict) and r.get("error"):
+        return r
+    return {"data": rows}
+
+
 _FIELDS = ("id,source,title,summary,full_text_url,document_number,agency,sub_agency,"
            "jurisdiction,industry_tags,regulation_type,effective_date,comment_deadline,"
            "severity,penalty_amount,affected_products,published_date,created_at")

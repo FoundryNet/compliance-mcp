@@ -9,8 +9,21 @@ classified by industry and severity.
 > **gov-contracts-mcp**, **brand-intel-mcp**, **patent-intel-mcp**,
 > **financial-signals-mcp**, **weather-intel-mcp**.
 
-Live MCP endpoint (Streamable HTTP):
-`https://compliance-mcp-production.up.railway.app/mcp`
+## Connect
+
+- **MCP endpoint** (Streamable HTTP): `https://compliance-mcp-production.up.railway.app/mcp`
+- **Registry:** `io.github.FoundryNet/compliance-mcp`
+- **Agent card:** `https://compliance-mcp-production.up.railway.app/.well-known/agent-card.json`
+
+### Claude Desktop / Cursor / Claude Code
+
+```bash
+claude mcp add --transport http compliance https://compliance-mcp-production.up.railway.app/mcp
+```
+
+```json
+{ "mcpServers": { "compliance": { "url": "https://compliance-mcp-production.up.railway.app/mcp" } } }
+```
 
 ## Tools
 
@@ -45,12 +58,13 @@ notices/guidance → `info`.
 multi-step queries or scraping) are planned additional sources; enforcement
 penalties are currently parsed from Federal Register notices.
 
-## Connect
+## Discovery
 
-Smithery: `@foundrynet/compliance-intel` · MCP registry: `io.github.FoundryNet/compliance-mcp`
-
-```json
-{ "mcpServers": { "compliance": { "url": "https://compliance-mcp-production.up.railway.app/mcp" } } }
-```
+MCP registry: `io.github.FoundryNet/compliance-mcp`
 
 Built by [FoundryNet](https://foundrynet.io) · hello@foundrynet.io
+
+## Live network activity
+
+**Live feed:** [mint.foundrynet.io/feed](https://mint.foundrynet.io/feed)  
+Real-time verified work across 13 servers and autonomous agents, anchored on Solana via [MINT Protocol](https://mint.foundrynet.io).

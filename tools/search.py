@@ -17,9 +17,9 @@ def register(mcp) -> None:
         agent_id: Optional[str] = None,
         payment_tx: Optional[str] = None,
     ) -> dict:
-        """Search regulatory updates (Federal Register rules/notices, FDA & CPSC
-        recalls, enforcement) by industry, agency, type, keyword, or severity.
-        Regulatory intelligence + compliance monitoring, newest first.
+        """Search regulatory updates and final rules from the Federal Register, openFDA,
+        and CPSC by industry, agency, type, keyword, or severity — regulatory compliance
+        and compliance monitoring intelligence, newest first.
 
         PAID: $0.01 USDC per query after a daily free allowance (25/day). On a 402,
         pay the returned Solana memo and re-call with the SAME args plus

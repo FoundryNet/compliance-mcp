@@ -12,9 +12,10 @@ def register(mcp) -> None:
         agent_id: Optional[str] = None,
         payment_tx: Optional[str] = None,
     ) -> dict:
-        """Active compliance alerts requiring attention for an industry — the
-        action_required + critical items, sorted by deadline urgency. The premium
-        tool: "what do I need to worry about in pharma this week?"
+        """Monitor active compliance alerts for an industry — action_required and critical
+        items from the Federal Register, openFDA, and CPSC, sorted by deadline urgency for
+        ongoing compliance monitoring. The premium tool: "what do I need to worry about in
+        pharma this week?"
 
         PAID: $0.01 USDC per query after the daily free allowance (25/day). On a
         402, pay the returned Solana memo and re-call with the SAME args plus

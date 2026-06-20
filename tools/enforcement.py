@@ -14,8 +14,9 @@ def register(mcp) -> None:
         agent_id: Optional[str] = None,
         payment_tx: Optional[str] = None,
     ) -> dict:
-        """Recent regulatory enforcement actions with parsed penalty amounts and
-        context, filterable by agency, company, industry, or minimum penalty.
+        """Track regulatory enforcement actions (incl. OSHA citations and SEC enforcement)
+        from the Federal Register, with parsed penalty amounts and context, filterable by
+        agency, company, industry, or minimum penalty.
 
         PAID: $0.01 USDC per query after the daily free allowance (25/day). On a
         402, pay the returned Solana memo and re-call with the SAME args plus

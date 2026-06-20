@@ -1,9 +1,13 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.FoundryNet/compliance-mcp",
-  "title": "Regulatory & Compliance Intelligence MCP",
-  "description": "Regulatory compliance, FDA recalls, federal register, enforcement actions & comment deadlines.",
+  "title": "Regulatory Compliance Intelligence MCP",
+  "description": "Track regulations, final rules, comment deadlines, recalls, and enforcement actions — live from the Federal Register, openFDA, and CPSC.",
   "version": "1.0.0",
+  "homepage": "https://foundrynet.io",
   "repository": { "url": "https://github.com/FoundryNet/compliance-mcp", "source": "github" },
+  "categories": ["compliance", "regulatory", "data", "legal"],
+  "tags": ["regulatory compliance", "FDA recalls", "federal register", "OSHA citations", "compliance monitoring", "SEC enforcement"],
+  "keywords": ["regulatory compliance", "FDA recalls", "federal register", "OSHA citations", "compliance monitoring", "SEC enforcement"],
   "remotes": [ { "type": "streamable-http", "url": "https://compliance-mcp-production.up.railway.app/mcp" } ]
 }

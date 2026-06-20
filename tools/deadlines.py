@@ -12,8 +12,9 @@ def register(mcp) -> None:
         agent_id: Optional[str] = None,
         payment_tx: Optional[str] = None,
     ) -> dict:
-        """Upcoming public-comment deadlines for proposed rules — what regulatory-
-        affairs agents track constantly. Sorted by soonest deadline.
+        """Track upcoming public-comment deadlines for proposed rules from the Federal
+        Register — what regulatory compliance and regulatory-affairs agents monitor
+        constantly. Sorted by soonest deadline.
 
         PAID: $0.01 USDC per query after the daily free allowance (25/day). On a
         402, pay the returned Solana memo and re-call with the SAME args plus

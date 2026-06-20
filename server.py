@@ -20,6 +20,7 @@ from starlette.responses import JSONResponse
 import compliance_aggregator as agg
 import config
 import core
+import daily_curator
 import identity
 import payment_gate
 import supa
@@ -47,7 +48,7 @@ async def health(request: Request) -> JSONResponse:
         "status": "ok", "service": "compliance-mcp", "transport": "streamable-http",
         "network": "FoundryNet Data Network",
         "tools": ["search_regulations", "compliance_alerts", "recall_check", "enforcement_actions",
-                  "comment_deadlines", "daily_digest", "mint_info"],
+                  "comment_deadlines", "daily_digest", "daily_brief", "mint_info"],
         "dataset": "supabase:regulatory_updates" if supa.configured() else "unconfigured",
         "sources": "federal_register + openfda + cpsc (keyless)",
         "x402_enabled": config.X402_ENABLED,
@@ -165,13 +166,23 @@ _DESC = ("Regulatory & compliance intelligence for agents: regulatory compliance
 _KEYWORDS = ["regulatory compliance", "FDA recalls", "federal register", "OSHA citations",
              "compliance monitoring", "regulatory intelligence", "product recalls", "enforcement actions"]
 
+_TOOL_NAMES = ["search_regulations", "compliance_alerts", "recall_check", "enforcement_actions",
+               "comment_deadlines", "daily_digest", "daily_brief", "mint_info"]
+
 _AGENT_CARD = {
-    "name": "Regulatory & Compliance Intelligence MCP", "description": _DESC,
-    "url": "https://github.com/FoundryNet/compliance-mcp",
-    "capabilities": ["regulatory_compliance", "fda_recalls", "federal_register",
-                     "compliance_monitoring", "product_recalls", "enforcement_actions"],
+    "name": "Regulatory Compliance Intelligence MCP",
+    "description": ("Track regulations, final rules, comment deadlines, recalls, and enforcement "
+                    "actions — live from the Federal Register, openFDA, and CPSC."),
+    "url": "https://compliance-mcp-production.up.railway.app/mcp",
+    "version": "1.0.0",
+    "capabilities": {"tools": _TOOL_NAMES},
+    "provider": {"name": "FoundryNet", "url": "https://foundrynet.io"},
     "network": "FoundryNet Data Network",
-    "protocols": {"mcp": {"endpoint": config.PUBLIC_MCP_URL, "transport": "streamable-http", "tools_count": 7},
+    "attestation": {"protocol": "MINT Protocol",
+                    "endpoint": "https://mint-mcp-production.up.railway.app/mcp",
+                    "verified_outputs": True, "live_feed": "https://mint.foundrynet.io/feed", "feed_api": "https://mint-mcp-production.up.railway.app/v1/feed"},
+    "protocols": {"mcp": {"endpoint": config.PUBLIC_MCP_URL, "transport": "streamable-http",
+                          "tools_count": len(_TOOL_NAMES)},
                   "x402": {"supported": True, "currency": "USDC", "network": "solana"}},
     "see_also": config.SISTER_SERVERS, "mint_protocol": config.MINT_MCP_URL,
     "contact": "hello@foundrynet.io",
@@ -230,6 +241,31 @@ async def _agg_loop():
             logger.warning(f"agg loop: {e}")
 
 
+_FREE_TOOL_NAMES = {"mint_info", "macro_dashboard", "cve_detail", "detail",
+                    "domain_age", "convert", "rates", "market_overview", "price",
+                    "quote", "batch_quote", "sector_performance"}
+
+
+@mcp.custom_route("/.well-known/mcp.json", methods=["GET"])
+async def wellknown_mcp_json(request: Request) -> JSONResponse:
+    """Machine-discovery card (emerging standard) for AI clients/crawlers."""
+    live = await _live_tools()
+    names = [t["name"] for t in live]
+    return JSONResponse({
+        "name": _AGENT_CARD["name"],
+        "description": _AGENT_CARD["description"],
+        "url": config.PUBLIC_MCP_URL,
+        "transport": ["streamable-http"],
+        "tools": names,
+        "pricing": {"model": "per-query", "free_tier": True,
+                    "paid_tools": [n for n in names if n not in _FREE_TOOL_NAMES]},
+        "attestation": {"enabled": True, "protocol": "MINT Protocol",
+                        "feed": "https://mint.foundrynet.io/feed"},
+        "network": {"name": "FoundryNet Data Network", "servers": 17,
+                    "homepage": "https://foundrynet.io"},
+    }, headers={"Cache-Control": "public, max-age=300"})
+
+
 def build_dual_app():
     main_app = mcp.http_app(transport="http", path="/mcp")
     sse_app = mcp.http_app(transport="sse", path="/sse")
@@ -243,12 +279,14 @@ def build_dual_app():
         async with main_life(app):
             async with sse_life(app):
                 task = asyncio.create_task(_agg_loop())
+                brief_task = asyncio.create_task(daily_curator.curator_loop())
                 try:
                     yield
                 finally:
-                    task.cancel()
-                    with contextlib.suppress(Exception):
-                        await task
+                    for t in (task, brief_task):
+                        t.cancel()
+                        with contextlib.suppress(Exception):
+                            await t
     main_app.router.lifespan_context = _dual_lifespan
     return main_app
 
