@@ -2,7 +2,7 @@
 
 Part of the FoundryNet Data Network. Aggregates free, keyless government sources
 (Federal Register, openFDA, CPSC) into classified, severity-scored regulatory
-updates. 7 tools + free mint_info. Free tier 25/day, then x402 (USDC on Solana).
+updates. 7 tools + free mint_info. Free tier 25/day, then metered per-query billing.
 A background task re-aggregates every 12h. Transport: Streamable HTTP at /mcp
 (+ legacy /sse). Health: /health.
 """
@@ -66,7 +66,7 @@ async def health(request: Request) -> JSONResponse:
         "status": "ok", "service": "compliance-mcp", "transport": "streamable-http",
         "network": "FoundryNet Data Network",
         "tools": ["search_regulations", "compliance_alerts", "recall_check", "enforcement_actions",
-                  "comment_deadlines", "daily_digest", "daily_brief", "mint_info"],
+                  "comment_deadlines", "daily_digest", "daily_brief", "brief_summary", "mint_info"],
         "dataset": "supabase:regulatory_updates" if supa.configured() else "unconfigured",
         "sources": "federal_register + openfda + cpsc (keyless)",
         "x402_enabled": config.X402_ENABLED,
@@ -179,13 +179,13 @@ async def admin_aggregate(request: Request) -> JSONResponse:
 _TAGLINE = "Regulatory compliance intelligence for agents — rules, recalls, enforcement, deadlines."
 _DESC = ("Regulatory & compliance intelligence for agents: regulatory compliance monitoring, FDA "
          "recalls, federal register rules, OSHA citations, product recalls, and enforcement actions, "
-         "classified by industry + severity. Part of the FoundryNet Data Network — attest analysis "
-         "with MINT Protocol; see also gov-contracts, brand-intel, patent-intel, financial-signals, weather-intel.")
+         "classified by industry + severity. Part of the FoundryNet Data Network — "
+         "see also gov-contracts, brand-intel, patent-intel, financial-signals, weather-intel.")
 _KEYWORDS = ["regulatory compliance", "FDA recalls", "federal register", "OSHA citations",
              "compliance monitoring", "regulatory intelligence", "product recalls", "enforcement actions"]
 
 _TOOL_NAMES = ["search_regulations", "compliance_alerts", "recall_check", "enforcement_actions",
-               "comment_deadlines", "daily_digest", "daily_brief", "mint_info"]
+               "comment_deadlines", "daily_digest", "daily_brief", "brief_summary", "mint_info"]
 
 _AGENT_CARD = {
     "name": "Regulatory Compliance Intelligence MCP",
@@ -196,14 +196,13 @@ _AGENT_CARD = {
     "capabilities": {"tools": _TOOL_NAMES},
     "provider": {"name": "FoundryNet", "url": "https://foundrynet.io"},
     "network": "FoundryNet Data Network",
-    "attestation": {"protocol": "MINT Protocol",
-                    "endpoint": "https://mint-mcp-production.up.railway.app/mcp",
-                    "verified_outputs": True, "live_feed": "https://mint.foundrynet.io/feed", "feed_api": "https://mint-mcp-production.up.railway.app/v1/feed"},
+    "attestation": {"type": "cryptographic", "verified_outputs": True},
     "protocols": {"mcp": {"endpoint": config.PUBLIC_MCP_URL, "transport": "streamable-http",
                           "tools_count": len(_TOOL_NAMES)},
-                  "x402": {"supported": True, "currency": "USDC", "network": "solana"}},
-    "see_also": config.SISTER_SERVERS, "mint_protocol": config.MINT_MCP_URL,
-    "contact": "hello@foundrynet.io",
+                  # FLAG: structured payment-rail fields — left intact for x402 settlement.
+                  "x402": {"supported": True}},
+    "see_also": config.SISTER_SERVERS,
+    "contact": "forge@foundrynet.io",
 }
 
 
@@ -234,7 +233,7 @@ async def server_card(request: Request) -> JSONResponse:
         "serverInfo": {"name": "Regulatory & Compliance Intelligence MCP", "version": "1.0.0"},
         "authentication": {"type": "http", "scheme": "bearer",
                            "description": ("mint_info is free; other tools give 25 free queries/day then "
-                                           "take an fnet_ Bearer key OR x402 USDC.")},
+                                           "take an fnet_ Bearer key OR metered per-query payment.")},
         "tools": live, "version": "1.0", "name": "Regulatory & Compliance Intelligence MCP",
         "tagline": _TAGLINE, "description": _DESC,
         "serverUrl": config.PUBLIC_MCP_URL, "transport": "streamable-http",
@@ -244,7 +243,7 @@ async def server_card(request: Request) -> JSONResponse:
         "see_also": config.SISTER_SERVERS,
         "pricing": {"model": "metered",
                     "free_tier": f"{config.FREE_TIER_DAILY} queries/day + free mint_info",
-                    "paid_from": f"{config.PRICE_SEARCH} USDC per query (x402)"},
+                    "paid_from": f"${config.PRICE_SEARCH} per query"},
     }, headers={"Cache-Control": "public, max-age=300"})
 
 
@@ -277,8 +276,7 @@ async def wellknown_mcp_json(request: Request) -> JSONResponse:
         "tools": names,
         "pricing": {"model": "per-query", "free_tier": True,
                     "paid_tools": [n for n in names if n not in _FREE_TOOL_NAMES]},
-        "attestation": {"enabled": True, "protocol": "MINT Protocol",
-                        "feed": "https://mint.foundrynet.io/feed"},
+        "attestation": {"enabled": True, "type": "cryptographic"},
         "network": {"name": "FoundryNet Data Network", "servers": 17,
                     "homepage": "https://foundrynet.io"},
     }, headers={"Cache-Control": "public, max-age=300"})

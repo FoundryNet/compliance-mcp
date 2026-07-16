@@ -17,9 +17,9 @@ def register(mcp) -> None:
         """Check product and FDA recalls from openFDA (food/drug/device) and CPSC (consumer
         products), with affected products and severity (Class I / injuries → critical).
 
-        PAID: $0.01 USDC per query after the daily free allowance (25/day). On a
-        402, pay the returned Solana memo and re-call with the SAME args plus
-        payment_tx=<signature>. An Authorization: Bearer fnet_ key bypasses it.
+        PAID: $0.01 per query after the daily free allowance (25/day). On a
+        402, settle the returned payment challenge and re-call with the SAME args plus
+        payment_tx=<reference>. An Authorization: Bearer fnet_ key bypasses it.
 
         Args:
             product: product name/keyword.
@@ -27,7 +27,7 @@ def register(mcp) -> None:
             category: category keyword (food, toy, drug, etc.).
             days_back: only recalls in the last N days.
             agent_id: stable id for your agent (scopes the free-tier counter).
-            payment_tx: Solana tx signature, when re-calling after a 402.
+            payment_tx: payment transaction reference, when re-calling after a 402.
         """
         return await core.do_recall(product, company, category, days_back,
                                     agent_key=identity.resolve_agent_key(agent_id),

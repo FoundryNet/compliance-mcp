@@ -18,9 +18,9 @@ def register(mcp) -> None:
         from the Federal Register, with parsed penalty amounts and context, filterable by
         agency, company, industry, or minimum penalty.
 
-        PAID: $0.01 USDC per query after the daily free allowance (25/day). On a
-        402, pay the returned Solana memo and re-call with the SAME args plus
-        payment_tx=<signature>. An Authorization: Bearer fnet_ key bypasses it.
+        PAID: $0.01 per query after the daily free allowance (25/day). On a
+        402, settle the returned payment challenge and re-call with the SAME args plus
+        payment_tx=<reference>. An Authorization: Bearer fnet_ key bypasses it.
 
         Args:
             agency: enforcing agency, partial match.
@@ -28,7 +28,7 @@ def register(mcp) -> None:
             industry: industry tag filter.
             min_penalty: minimum penalty amount (USD).
             agent_id: stable id for your agent (scopes the free-tier counter).
-            payment_tx: Solana tx signature, when re-calling after a 402.
+            payment_tx: payment transaction reference, when re-calling after a 402.
         """
         return await core.do_enforcement(agency, company, industry, min_penalty,
                                          agent_key=identity.resolve_agent_key(agent_id),

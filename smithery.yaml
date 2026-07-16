@@ -25,9 +25,8 @@ keywords:
   - sec-enforcement
   - compliance-monitoring
 attestation:
-  protocol: "MINT Protocol"
+  type: "cryptographic"
   verified_outputs: true
-  live_feed: "https://mint.foundrynet.io/feed"
 network:
   name: "FoundryNet Data Network"
   servers: 17
@@ -41,4 +40,4 @@ startCommand:
       api_key:
         type: string
         title: "Forge billing key (optional)"
-        description: "fnet_ key to bypass the per-query x402 paywall and bill to a Forge account."
+        description: "fnet_ key to bypass the per-query paywall and bill to a Forge account."

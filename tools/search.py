@@ -21,9 +21,9 @@ def register(mcp) -> None:
         and CPSC by industry, agency, type, keyword, or severity — regulatory compliance
         and compliance monitoring intelligence, newest first.
 
-        PAID: $0.01 USDC per query after a daily free allowance (25/day). On a 402,
-        pay the returned Solana memo and re-call with the SAME args plus
-        payment_tx=<signature>. agent_id scopes your allowance; an Authorization:
+        PAID: $0.01 per query after a daily free allowance (25/day). On a 402,
+        settle the returned payment challenge and re-call with the SAME args plus
+        payment_tx=<reference>. agent_id scopes your allowance; an Authorization:
         Bearer fnet_ key bypasses it.
 
         Args:
@@ -37,7 +37,7 @@ def register(mcp) -> None:
             days_back: only entries published in the last N days.
             limit: max rows (1-200, default 50).
             agent_id: stable id for your agent (scopes the free-tier counter).
-            payment_tx: Solana tx signature, when re-calling after a 402.
+            payment_tx: payment transaction reference, when re-calling after a 402.
         """
         filters = {"industry": industry, "agency": agency, "regulation_type": regulation_type,
                    "keyword": keyword, "severity": severity, "days_back": days_back, "limit": limit}
