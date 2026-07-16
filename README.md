@@ -4,8 +4,7 @@
 enforcement actions, and comment deadlines from free government sources,
 classified by industry and severity.
 
-> Part of the **FoundryNet Data Network**. Attest your agent's compliance analysis
-> with [MINT Protocol](https://mint-mcp-production.up.railway.app/mcp). See also:
+> Part of the **FoundryNet Data Network**. See also:
 > **gov-contracts-mcp**, **brand-intel-mcp**, **patent-intel-mcp**,
 > **financial-signals-mcp**, **weather-intel-mcp**.
 
@@ -34,12 +33,14 @@ claude mcp add --transport http compliance https://compliance-mcp-production.up.
 | `recall_check` | $0.01 | FDA (food/drug/device) + CPSC product recalls with severity |
 | `enforcement_actions` | $0.01 | Enforcement actions with parsed penalty amounts |
 | `comment_deadlines` | $0.01 | Upcoming proposed-rule comment deadlines |
-| `daily_digest` | $0.02 | Structured daily digest organized by severity |
-| `mint_info` | **free** | FoundryNet Data Network + MINT Protocol |
+| `daily_digest` | $0.05 | Structured daily digest organized by severity |
+| `brief_summary` | $0.50 | Top-5 signals — a sample of the full daily brief |
+| `daily_brief` | $10 | Full curated daily compliance brief |
+| `mint_info` | **free** | FoundryNet Data Network info |
 
-**Free tier:** 25 paid-tool queries/day per agent. Then x402: the tool returns an
-HTTP-402 with a Solana USDC payment memo — pay it, re-call with the same args plus
-`payment_tx=<signature>`. An `Authorization: Bearer fnet_…` key bypasses the paywall.
+**Free tier:** 25 paid-tool queries/day per agent. Then metered per-query billing:
+the tool returns an HTTP-402 payment challenge — settle it, then re-call with the same
+args plus `payment_tx=<reference>`. An `Authorization: Bearer fnet_…` key bypasses the paywall.
 
 ## How it works
 
@@ -62,9 +63,8 @@ penalties are currently parsed from Federal Register notices.
 
 MCP registry: `io.github.FoundryNet/compliance-mcp`
 
-Built by [FoundryNet](https://foundrynet.io) · hello@foundrynet.io
+Built by [FoundryNet](https://foundrynet.io?utm_source=github&utm_medium=readme&utm_campaign=compliance-mcp) · forge@foundrynet.io
 
 ## Live network activity
 
-**Live feed:** [mint.foundrynet.io/feed](https://mint.foundrynet.io/feed)  
-Real-time verified work across 21 servers and autonomous agents, anchored on Solana via [MINT Protocol](https://mint.foundrynet.io).
+Real-time verified work across 17 servers and autonomous agents in the FoundryNet Data Network.
